@@ -23,6 +23,14 @@ const productSeed = [
   ['Volini Pain Relief Gel', 'Diclofenac Gel 30g', 'Diclofenac Topical Gel', 130, 49, 'Sun Pharma', 'Fever & Pain', false, 'PF-VOL-2407'],
   ['Limcee Vitamin C 500mg', 'Ascorbic Acid Chewable', 'Celin / Generic Vit C', 25, 12, 'Abbott', 'Vitamins', false, 'PF-LIM-2419'],
   ['Accu-Chek Active Strips', '50 Blood Glucose Strips', 'Truworth Gluco Strips', 975, 540, 'Roche', 'Diabetes', false, 'PF-ACC-2308'],
+  ['UV Doux Silicone Sunscreen Gel SPF 50', 'Sunscreen SPF 50 PA+++ · 50g', 'SunProtect SPF 50 Generic Gel', 699, 299, 'Brinton', 'Sunscreen', false, 'PF-UVD-2601'],
+  ['Telma 40 Tablet', 'Telmisartan 40mg', 'Telmisartan 40mg Generic', 165, 42, 'Glenmark', 'Blood Pressure', true, 'PF-TEL-2602'],
+  ['Amlodac 5 Tablet', 'Amlodipine 5mg', 'Amlodipine 5mg Generic', 75, 18, 'Zydus', 'Blood Pressure', true, 'PF-AML-2603'],
+  ['Glycomet GP 1 Tablet', 'Glimepiride 1mg + Metformin 500mg', 'Glimepiride-Metformin Generic', 180, 62, 'USV', 'Diabetes', true, 'PF-GLY-2604'],
+  ['Thyronorm 50 Tablet', 'Levothyroxine Sodium 50mcg', 'Levothyroxine 50mcg Generic', 150, 38, 'Abbott', 'Thyroid', true, 'PF-THY-2605'],
+  ['Budecort 0.5 Respules', 'Budesonide 0.5mg / 2ml', 'Budesonide 0.5mg Generic', 180, 70, 'Cipla', 'Respiratory', true, 'PF-BUD-2606'],
+  ['Glivec 400 Tablet', 'Imatinib Mesylate 400mg', 'Imatinib 400mg Generic', 8500, 2100, 'Novartis', 'Oncology', true, 'PF-GLE-2607'],
+  ['Anastral 1 Tablet', 'Anastrozole 1mg', 'Anastrozole 1mg Generic', 320, 80, 'Natco', 'Oncology', true, 'PF-ANA-2608'],
 ].map(([name, salt, generic, mrp, genericPrice, manufacturer, category, requiresRx, batch], index) => ({
   id: `med-${index + 1}`, name, genericSalt: salt, genericName: generic, mrp, salePrice: Math.round(mrp * .88), genericPrice, manufacturer, category, requiresRx, batch, stock: 18 + index * 7, expiry: `${12 + (index % 4)}/0${6 + (index % 3)}/2027`, listingStatus: 'regular_retail', image: ['tablet', 'capsule', 'bottle', 'blister'][index % 4], storeName: 'Rakesh Medicals',
 }));
@@ -49,7 +57,7 @@ const freshState = () => ({
 
 function useSharedState() {
   const channelRef = useRef(null);
-  const [state, setState] = useState(() => { try { return JSON.parse(localStorage.getItem(KEY)) || freshState(); } catch { return freshState(); } });
+  const [state, setState] = useState(() => { try { const saved = JSON.parse(localStorage.getItem(KEY)); if (!saved) return freshState(); const known = new Set(saved.inventory.map((item) => item.id)); return { ...saved, inventory: [...saved.inventory, ...productSeed.filter((item) => !known.has(item.id))] }; } catch { return freshState(); } });
   useEffect(() => { localStorage.setItem(KEY, JSON.stringify(state)); }, [state]);
   useEffect(() => { channelRef.current = 'BroadcastChannel' in window ? new BroadcastChannel(CHANNEL) : null; const onStorage = (event) => event.key === KEY && event.newValue && setState(JSON.parse(event.newValue)); const onMessage = (event) => event.data && setState(event.data); window.addEventListener('storage', onStorage); channelRef.current?.addEventListener('message', onMessage); return () => { window.removeEventListener('storage', onStorage); channelRef.current?.close(); channelRef.current = null; }; }, []);
   const update = (fn) => setState((current) => { const next = fn(structuredClone(current)); localStorage.setItem(KEY, JSON.stringify(next)); channelRef.current?.postMessage(next); return next; });

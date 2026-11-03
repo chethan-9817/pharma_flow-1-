@@ -21,6 +21,14 @@ const medicineSeed = [
   ['Volini Pain Relief Gel', 'Diclofenac Gel 30g', 'Diclofenac Topical Gel', 130, 49, 'Sun Pharma', false],
   ['Limcee Vitamin C 500mg', 'Ascorbic Acid Chewable', 'Celin / Generic Vit C', 25, 12, 'Abbott', false],
   ['Accu-Chek Active Strips', '50 Blood Glucose Strips', 'Truworth Gluco Strips', 975, 540, 'Roche', false],
+  ['UV Doux Silicone Sunscreen Gel SPF 50', 'Sunscreen SPF 50 PA+++ · 50g', 'SunProtect SPF 50 Generic Gel', 699, 299, 'Brinton', false],
+  ['Telma 40 Tablet', 'Telmisartan 40mg', 'Telmisartan 40mg Generic', 165, 42, 'Glenmark', true],
+  ['Amlodac 5 Tablet', 'Amlodipine 5mg', 'Amlodipine 5mg Generic', 75, 18, 'Zydus', true],
+  ['Glycomet GP 1 Tablet', 'Glimepiride 1mg + Metformin 500mg', 'Glimepiride-Metformin Generic', 180, 62, 'USV', true],
+  ['Thyronorm 50 Tablet', 'Levothyroxine Sodium 50mcg', 'Levothyroxine 50mcg Generic', 150, 38, 'Abbott', true],
+  ['Budecort 0.5 Respules', 'Budesonide 0.5mg / 2ml', 'Budesonide 0.5mg Generic', 180, 70, 'Cipla', true],
+  ['Glivec 400 Tablet', 'Imatinib Mesylate 400mg', 'Imatinib 400mg Generic', 8500, 2100, 'Novartis', true],
+  ['Anastral 1 Tablet', 'Anastrozole 1mg', 'Anastrozole 1mg Generic', 320, 80, 'Natco', true],
 ].map(([name, genericSalt, cheaperGenericName, mrp, cheaperGenericPrice, manufacturer, requiresRx], index) => ({ id: `med-${index + 1}`, storeId: 'store-rakesh', storeName: 'Rakesh Medicals', brandName: name, genericSalt, cheaperGenericName, cheaperGenericPrice, manufacturer, batchNumber: `PF-${String(index + 1).padStart(3, '0')}-2026`, barcode: `8901234567${String(index).padStart(3, '0')}`, mrp, salePrice: Math.round(mrp * .88), stockQuantity: 28 + index * 6, expiryDate: '2027-12-31', daysToExpiry: 575, requiresRx, listingStatus: 'regular_retail', imageUrl: '' }));
 const seed = {
   users: [
